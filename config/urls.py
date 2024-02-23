@@ -16,23 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
+from drf_spectacular.views import SpectacularSwaggerView, SpectacularAPIView
 from django.conf.urls.i18n import i18n_patterns
 from django.conf import settings
 from django.conf.urls.static import static
-from drf_spectacular.views import SpectacularSwaggerView
-
-schema_view = get_schema_view(
-    openapi.Info(
-        title='History Site',
-        description='Daniel',
-        default_version='v1',
-    ),
-    public=True,
-)
 
 urlpatterns = [
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
     path('i18n/', include('django.conf.urls.i18n')),
 ]
