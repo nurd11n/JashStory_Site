@@ -18,8 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from django.conf.urls.i18n import i18n_patterns
 from django.conf import settings
 from django.conf.urls.static import static
+from drf_spectacular.views import SpectacularSwaggerView
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -31,9 +33,15 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('apps.history.urls')),
+    path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
+
+urlpatterns += i18n_patterns(
+    path("admin/", admin.site.urls),
+    path('pages/', include('django.contrib.flatpages.urls')),
+    path('api/', include('apps.history.urls')),
+)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

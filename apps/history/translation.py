@@ -9,9 +9,9 @@ class CategoryTranslateOptions(TranslationOptions):
 
 @register(Post)
 class CatalogueTranslateOptions(TranslationOptions):
-    fields = ('title', 'article',)
+    fields = ('title', 'article', 'category')
 
 
 @register(Collection)
 class ProductTranslateOptions(TranslationOptions):
-    fields = ('title',)
+    fields = ('title', 'posts')

@@ -185,8 +185,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 JAZZMIN_SETTINGS = {
-    "site_header": "ImpexCorp",
-    "site_brand": "ImpexCorp",
+    "site_header": "History",
+    "site_brand": "History",
     "welcome_sign": "Welcome to the library",
     "search_model": ["auth.User"],
 
@@ -198,7 +198,7 @@ JAZZMIN_SETTINGS = {
 
         {"model": "auth.User"},
 
-        {"model": "apps.impex_corp.models.Autos"},
+        {"model": "apps.history.apps.Posts"},
     ],
 
     "usermenu_links": [
@@ -258,3 +258,5 @@ LOGGING = {
         },
     },
 }
+
+CSRF_TRUSTED_ORIGINS=["http://127.0.0.1:8000/"]

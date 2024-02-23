@@ -18,6 +18,9 @@ class AutoAdminForm(forms.ModelForm):
 
 @admin.register(Category)
 class CategoryAdminModel(admin.ModelAdmin):
+    list_display = ['slug', "name", ]
+    list_display_links = ("slug", )
+    prepopulated_fields = {'slug': ("name", )}
 
     fieldsets = (
         ('Base Fields', {
@@ -41,37 +44,40 @@ class PostAdminModel(admin.ModelAdmin):
 
     fieldsets = (
         ('Base Fields', {
-            'fields': ('category', 'image', 'title', 'years', 'article', 'created_at'),
+            'fields': ('category', 'image', 'title', 'years', 'article'),
             'description': '%s' % TEXT,
         }),
         ('Russian Language', {
-            'fields': ('title_ru', 'article_ru'),
+            'fields': ('title_ru', 'article_ru', 'category_ru'),
         }),
         ('English Language', {
-            'fields': ('title_en', 'article_en'),
+            'fields': ('title_en', 'article_en', 'category_en'),
         }),
         ('Kyrgyz Language', {
-            'fields': ('title_ky', 'article_ky'),
+            'fields': ('title_ky', 'article_ky', 'category_ky'),
         }),
     )
 
 
 @admin.register(Collection)
-class PostAdminModel(admin.ModelAdmin):
+class CollectionAdminModel(admin.ModelAdmin):
+    list_display = ['slug', "title", ]
+    list_display_links = ("slug", )
+    prepopulated_fields = {'slug': ("title", )}
 
     fieldsets = (
         ('Base Fields', {
-            'fields': ('slug', 'title', 'post'),
+            'fields': ('slug', 'title', 'posts'),
             'description': '%s' % TEXT,
         }),
         ('Russian Language', {
-            'fields': ('title_ru',),
+            'fields': ('title_ru', 'posts_ru'),
         }),
         ('English Language', {
-            'fields': ('title_en',),
+            'fields': ('title_en', 'posts_en'),
         }),
         ('Kyrgyz Language', {
-            'fields': ('title_ky',),
+            'fields': ('title_ky', 'posts_ky'),
         }),
     )
 
