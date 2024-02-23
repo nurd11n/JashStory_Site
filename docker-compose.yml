@@ -2,7 +2,7 @@
   services:
     django:
       build: .
-      container_name: impex_corp
+      container_name: historyproject
       ports:
         - "8000:8000"
       volumes:

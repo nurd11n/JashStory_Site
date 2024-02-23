@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     "corsheaders",
 
     # apps
-    # 'apps.article'
+    'apps.history',
 ]
 
 MIDDLEWARE = [
@@ -89,6 +89,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+SITE_ID = 1
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -165,18 +166,17 @@ gettext = lambda s: s
 LANGUAGES = (
     ('ru', gettext('Russia')),
     ('en', gettext('English')),
-    ('zh-hant', gettext('繁體中文')),
     ("ky", gettext("Кыргызча")),
 )
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "/back-static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "back-static")
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-MEDIA_URL = '/back-media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "back-media")
+MEDIA_URL = '/posts/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'posts')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -217,8 +217,8 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Impex Corp API',
-    'DESCRIPTION': 'Impex Corp description',
+    'TITLE': 'History API',
+    'DESCRIPTION': 'History description',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
