@@ -12,4 +12,5 @@ django-modeltranslation==0.18.11
 django-ckeditor==6.7.1
 django-js-asset==2.2.0
 gunicorn
+googletrans==4.0.0-rc1
 

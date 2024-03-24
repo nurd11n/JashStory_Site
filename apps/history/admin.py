@@ -44,17 +44,17 @@ class PostAdminModel(admin.ModelAdmin):
 
     fieldsets = (
         ('Base Fields', {
-            'fields': ('category', 'image', 'title', 'years', 'article'),
+            'fields': ('category', 'image', 'title', 'years', 'article', 'collection'),
             'description': '%s' % TEXT,
         }),
         ('Russian Language', {
-            'fields': ('title_ru', 'article_ru', 'category_ru'),
+            'fields': ('title_ru', 'article_ru',),
         }),
         ('English Language', {
-            'fields': ('title_en', 'article_en', 'category_en'),
+            'fields': ('title_en', 'article_en',),
         }),
         ('Kyrgyz Language', {
-            'fields': ('title_ky', 'article_ky', 'category_ky'),
+            'fields': ('title_ky', 'article_ky',),
         }),
     )
 
@@ -67,17 +67,17 @@ class CollectionAdminModel(admin.ModelAdmin):
 
     fieldsets = (
         ('Base Fields', {
-            'fields': ('slug', 'title', 'posts'),
+            'fields': ('slug', 'title',),
             'description': '%s' % TEXT,
         }),
         ('Russian Language', {
-            'fields': ('title_ru', 'posts_ru'),
+            'fields': ('title_ru',),
         }),
         ('English Language', {
-            'fields': ('title_en', 'posts_en'),
+            'fields': ('title_en',),
         }),
         ('Kyrgyz Language', {
-            'fields': ('title_ky', 'posts_ky'),
+            'fields': ('title_ky',),
         }),
     )
 

@@ -9,18 +9,18 @@ class LanguageMixinForSerializers:
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        # default = ['gas', 'drive', 'wheel', 'car_type', 'description', 'naming',]
+        default = ['name', 'title', 'article']
         if self.accept_language == 'ru':
             data = {key: value for key, value in data.items() if not key.endswith((
-                '_en', '_ky', #*default
+                '_en', '_ky', *default
             ))}
         elif self.accept_language == 'ky':
             data = {key: value for key, value in data.items() if not key.endswith((
-                '_en', '_ru', #*default
+                '_en', '_ru', *default
             ))}
         else:
             data = {key: value for key, value in data.items() if not key.endswith((
-                '_ru', '_ky', #*default
+                '_ru', '_ky', *default
             ))}
         return data
 
