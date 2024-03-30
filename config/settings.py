@@ -136,7 +136,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ru"
 
 TIME_ZONE = "UTC"
 
@@ -144,20 +144,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-EXTRA_LANG_INFO = {
-    'ky': {
-        'bidi': False,
-        'code': 'kg',
-        'name': 'Kyrgyz',
-        'name_local': u"Кыргызча",
-    },
-}
-
-LANG_INFO = dict(django.conf.locale.LANG_INFO, **EXTRA_LANG_INFO)
-django.conf.locale.LANG_INFO = LANG_INFO
-global_settings.LANGUAGES = global_settings.LANGUAGES + [("ky", 'Кыргызча')]
-
-PACKAGE_ROOT = os.path.abspath(os.path.dirname(__file__))
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),
 )
@@ -165,7 +151,7 @@ LOCALE_PATHS = (
 gettext = lambda s: s
 
 LANGUAGES = (
-    ('ru', gettext('Russia')),
+    ('ru', gettext('Russian')),
     ('en', gettext('English')),
     ("ky", gettext("Кыргызча")),
 )
@@ -207,8 +193,8 @@ JAZZMIN_SETTINGS = {
         {"model": "auth.user"}
     ],
 
+    "language_chooser": True,
 }
-
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

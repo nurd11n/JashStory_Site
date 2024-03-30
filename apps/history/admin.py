@@ -2,11 +2,12 @@ from django.contrib import admin
 from django import forms
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from .models import *
+from modeltranslation.admin import TranslationAdmin, TabbedTranslationAdmin
 
 TEXT = "Здесь вам нужно будет ввести данные товара на 3 разных языках"
 
 
-class AutoAdminForm(forms.ModelForm):
+class PostAdminForm(forms.ModelForm):
     description_ru = forms.CharField(label="Описание", widget=CKEditorUploadingWidget())
     description_en = forms.CharField(label="Описание", widget=CKEditorUploadingWidget())
     description_ky = forms.CharField(label="Описание", widget=CKEditorUploadingWidget())
@@ -17,70 +18,54 @@ class AutoAdminForm(forms.ModelForm):
 
 
 @admin.register(Category)
-class CategoryAdminModel(admin.ModelAdmin):
+class CategoryAdminModel(TranslationAdmin):
     list_display = ['slug', "name", ]
     list_display_links = ("slug", )
     prepopulated_fields = {'slug': ("name", )}
 
-    fieldsets = (
-        ('Base Fields', {
-            'fields': ("slug", 'name', 'image'),
-            'description': '%s' % TEXT,
-        }),
-        ('Russian Language', {
-            'fields': ('name_ru',),
-        }),
-        ('English Language', {
-            'fields': ('name_en',),
-        }),
-        ('Kyrgyz Language', {
-            'fields': ('name_ky',),
-        }),
-    )
+    class Media:
+        js = (
+            'https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
+            'https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
+            'modeltranslation/js/tabbed_translation_fields.js',
+        )
+        css = {
+            'screen': ('modeltranslation/css/tabbed_translation_fields.css',),
+        }
 
 
 @admin.register(Post)
-class PostAdminModel(admin.ModelAdmin):
+class PostAdminModel(TranslationAdmin):
+    # list_display = ['slug', "title", ]
+    # list_display_links = ("slug", )
+    # prepopulated_fields = {'slug': ("title", )}
 
-    fieldsets = (
-        ('Base Fields', {
-            'fields': ('category', 'image', 'title', 'years', 'article', 'collection'),
-            'description': '%s' % TEXT,
-        }),
-        ('Russian Language', {
-            'fields': ('title_ru', 'article_ru',),
-        }),
-        ('English Language', {
-            'fields': ('title_en', 'article_en',),
-        }),
-        ('Kyrgyz Language', {
-            'fields': ('title_ky', 'article_ky',),
-        }),
-    )
+    class Media:
+        js = (
+            'https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
+            'https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
+            'modeltranslation/js/tabbed_translation_fields.js',
+        )
+        css = {
+            'screen': ('modeltranslation/css/tabbed_translation_fields.css',),
+        }
 
 
 @admin.register(Collection)
-class CollectionAdminModel(admin.ModelAdmin):
+class CollectionAdminModel(TranslationAdmin):
     list_display = ['slug', "title", ]
     list_display_links = ("slug", )
     prepopulated_fields = {'slug': ("title", )}
 
-    fieldsets = (
-        ('Base Fields', {
-            'fields': ('slug', 'title',),
-            'description': '%s' % TEXT,
-        }),
-        ('Russian Language', {
-            'fields': ('title_ru',),
-        }),
-        ('English Language', {
-            'fields': ('title_en',),
-        }),
-        ('Kyrgyz Language', {
-            'fields': ('title_ky',),
-        }),
-    )
-
+    class Media:
+        js = (
+            'https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
+            'https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
+            'modeltranslation/js/tabbed_translation_fields.js',
+        )
+        css = {
+            'screen': ('modeltranslation/css/tabbed_translation_fields.css',),
+        }
 
 admin.site.register(Years)
 
