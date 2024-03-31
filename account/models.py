@@ -31,6 +31,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=10, blank=True)
+    forgot_password_code = models.CharField(max_length=20, blank=True)
 
     objects = UserManager()
 
@@ -43,3 +44,7 @@ class User(AbstractUser):
     def create_activation_code(self):
         code = get_random_string(length=10, allowed_chars='0123456789')
         self.activation_code = code
+
+    def create_forgot_password_code(self):
+        code = get_random_string(length=5, allowed_chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+        self.forgot_password_code = code
