@@ -162,11 +162,11 @@ LANGUAGES = (
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = "/back-static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "back-static")
 
-MEDIA_URL = '/posts/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'posts')
+MEDIA_URL = '/back-media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "back-media")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -214,7 +214,6 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'History description',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    # OTHER SETTINGS
 }
 
 
