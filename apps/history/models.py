@@ -2,29 +2,26 @@ from django.db import models
 from googletrans import Translator, LANGUAGES
 import asyncio
 
+translator = Translator()
 
 class TranslationMixin:
     fields_to_translate = []
 
+    async def translate_text(self, text, lang):
+        translated_text = await asyncio.sleep(0, translator.translate(text, src='ru', dest=lang))
+        return translated_text.text
+
     async def translate_fields(self):
-        translator = Translator()
-        tasks = await asyncio.gather(*map(lambda field_name: self.translate_text(translator, field_name, getattr(self, field_name)), self.fields_to_translate))
-        translations = [translation for translation_list in tasks for translation in translation_list]
-        for field_name, lang, translated_text in translations:
-            setattr(self, f"{field_name}_{lang}" if lang != 'zh-tw' else f"{field_name}_zh_hant", translated_text)
-
-    @staticmethod
-    async def translate_text(translator, field_name, text):
-        languages = ['en', 'ky', 'zh-tw']
-        translations = []
-        for lang in languages:
-            translated_text = await asyncio.to_thread(translator.translate, text, src='ru', dest=lang)
-            translations.append((field_name, lang, translated_text.text))
-        return translations
-
-    def save(self, *args, **kwargs):
-        asyncio.run(self.translate_fields())
-        super().save(*args, **kwargs)
+        tasks = []
+        for field_name in self.fields_to_translate:
+            text = getattr(self, field_name)
+            languages = ['en', 'ky', 'zh-tw']
+            tasks.extend([self.translate_text(text, lang) for lang in languages])
+        translations = await asyncio.gather(*tasks)
+        for i, field_name in enumerate(self.fields_to_translate):
+            for j, lang in enumerate(languages):
+                translated_text = translations[i * len(languages) + j]
+                setattr(self, f"{field_name}_{lang}" if lang != 'zh-tw' else f"{field_name}_zh_hant", translated_text)
 
 
 class Category(TranslationMixin, models.Model):
