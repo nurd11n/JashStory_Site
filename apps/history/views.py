@@ -3,18 +3,10 @@ from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import *
 from .serializers import *
-from rest_framework.response import Response
+from rest_framework import generics
 
 
-class LanguageMixinForViews:
-    def retrieve(self, request, *args, **kwargs):
-        accept_language = request.headers.get('Accept-Language', 'en')
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, accept_language=accept_language)
-        return Response(serializer.data)
-
-
-class CategoryView(ModelViewSet, LanguageMixinForViews):
+class CategoryView(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
@@ -22,7 +14,7 @@ class CategoryView(ModelViewSet, LanguageMixinForViews):
     search_fields = ['name']
 
 
-class YearsView(ModelViewSet, LanguageMixinForViews):
+class YearsView(ModelViewSet):
     queryset = Years.objects.all()
     serializer_class = YearsSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
@@ -30,7 +22,7 @@ class YearsView(ModelViewSet, LanguageMixinForViews):
     search_fields = ['ages']
 
 
-class PostView(ModelViewSet, LanguageMixinForViews):
+class PostView(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
@@ -38,9 +30,19 @@ class PostView(ModelViewSet, LanguageMixinForViews):
     search_fields = ['title', 'years', 'category']
 
 
-class CollectionView(ModelViewSet, LanguageMixinForViews):
+class CollectionView(ModelViewSet):
     queryset = Collection.objects.all()
     serializer_class = CollectionSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['slug', 'title']
     search_fields = ['title']
+
+
+class PostImageViewSet(generics.ListAPIView):
+    queryset = PostImage.objects.all()
+    serializer_class = PostImageSerializer
+
+
+class CollectionImageViewSet(generics.ListAPIView):
+    queryset = CollectionImage.objects.all()
+    serializer_class = CollectionImageSerializer

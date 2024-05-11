@@ -7,7 +7,6 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from django.contrib.auth import get_user_model
 from .serializers import (
     RegisterSerializer,
     ChangePasswordSerializer,
@@ -70,7 +69,6 @@ class ChangePasswordView(APIView):
         )
         serializer.is_valid(raise_exception=True)
         serializer.set_new_password()
-        # logger.error('Ошибка ChangePasswordV')
         return Response(
             'Пароль успешно обнавлен', status=200
         )
