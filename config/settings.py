@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.flatpages",
 
     # libs
+    "debug_toolbar",
     'drf_spectacular',
     "rest_framework",
     "django_filters",
@@ -71,12 +72,12 @@ INSTALLED_APPS = [
 TOKEN_MODEL = None
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    'allauth.account.middleware.AccountMiddleware',
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -109,23 +110,23 @@ SITE_ID = 1
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config('DB_NAME'),
-        'USER': config('DB_USER'),
-        "PASSWORD": config('DB_PASS'),
-        'HOST': config('DB_HOST', 'history-postgres'),
-        'PORT': 5432,
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": config('DB_NAME'),
+#         'USER': config('DB_USER'),
+#         "PASSWORD": config('DB_PASS'),
+#         'HOST': config('DB_HOST', 'history-postgres'),
+#         'PORT': 5432,
+#     }
+# }
 
 
 # Password validation
@@ -286,3 +287,25 @@ LOGGING = {
 }
 
 CSRF_TRUSTED_ORIGINS=["http://127.0.0.1:8000/"]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    },
+    'redis_cache': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://'+ REDIS_HOST + ':' + REDIS_PORT + '/1',  
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+def show_toolbar(request):
+    return True
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': show_toolbar,
+}
