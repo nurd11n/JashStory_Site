@@ -11,20 +11,20 @@ class CategorySerializer(ModelSerializer):
 
 class YearsSerializer(ModelSerializer):
     class Meta:
-        model = Years
+        model = Year
         fields = '__all__'
 
 
 class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
-        fields = ['category', 'title', 'years', 'article', 'collection', 'image']
+        fields = ['category', 'title', 'years', 'article', 'collection']
 
 
 class CollectionSerializer(ModelSerializer):
     class Meta:
         model = Collection
-        fields = ['slug', 'title', 'image']
+        fields = ['slug', 'title']
 
 
 class PostImageSerializer(ModelSerializer):

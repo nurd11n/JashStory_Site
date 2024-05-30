@@ -1,14 +1,14 @@
 from .views import *
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 
-
-router = DefaultRouter()
-router.register('categories', CategoryView)
-router.register('years', YearsView)
-router.register('posts', PostView)
-router.register('collections', CollectionView)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('category/', CategoryView.as_view()),
+    path('category/<str:pk>/', CategoryView.as_view()),
+    path('post/', PostView.as_view()),
+    path('post/<str:pk>/', PostView.as_view()),
+    path('year/', YearsView.as_view()),
+    path('year/<str:pk>/', YearsView.as_view()),
+    path('collection/', CollectionView.as_view()),
+    path('collection/<str:pk>/', CollectionView.as_view()),
 ]

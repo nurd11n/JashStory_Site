@@ -4,6 +4,7 @@ import asyncio
 
 translator = Translator()
 
+
 class TranslationMixin:
     fields_to_translate = []
 
@@ -23,6 +24,11 @@ class TranslationMixin:
                 translated_text = translations[i * len(languages) + j]
                 setattr(self, f"{field_name}_{lang}" if lang != 'zh-tw' else f"{field_name}_zh_hant", translated_text)
 
+    def save(self, *args, **kwargs):
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.translate_fields())
+        super().save(*args, **kwargs)
+
 
 class Category(TranslationMixin, models.Model):
     slug = models.SlugField(primary_key=True, blank=True, unique=True)
@@ -35,18 +41,18 @@ class Category(TranslationMixin, models.Model):
         return self.name
 
 
-class Years(models.Model):
-    slug = models.SlugField(primary_key=True, blank=True, unique=True)
-    ages = models.DateField()
+class Year(models.Model):
+    name = models.CharField(max_length=100)
+    start_age = models.IntegerField(blank=True, null=True)
+    end_age = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return self.ages.year
+        return self.name
 
 
 class Collection(TranslationMixin, models.Model):
     slug = models.SlugField(primary_key=True, blank=True, unique=True)
     title = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='images/', blank=True)
 
     fields_to_translate = ['title']
 
@@ -55,16 +61,15 @@ class Collection(TranslationMixin, models.Model):
     
 
 class CollectionImage(models.Model):
-    auto = models.ForeignKey(Collection, related_name='images', on_delete=models.CASCADE)
+    collection = models.ForeignKey(Collection, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='collection_images/')
 
 
 class Post(TranslationMixin, models.Model):
     category = models.ForeignKey(Category, models.CASCADE, related_name='posts')
     title = models.CharField(max_length=100)
-    years = models.ForeignKey(Years, models.CASCADE, related_name='posts')
+    years = models.ForeignKey(Year, models.CASCADE, related_name='posts')
     article = models.TextField()
-    image = models.ImageField(upload_to='images/', blank=True)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -75,6 +80,6 @@ class Post(TranslationMixin, models.Model):
     
 
 class PostImage(models.Model):
-    auto = models.ForeignKey(Post, related_name='images', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='post_images/')
 

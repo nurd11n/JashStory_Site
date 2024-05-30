@@ -48,5 +48,5 @@ class CollectionAdminModel(TranslatorMediaMixin):
     list_display = ["title", ]
 
 
-admin.site.register(Years)
+admin.site.register(Year)
 

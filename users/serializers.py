@@ -1,11 +1,16 @@
 from rest_framework.serializers import ModelSerializer, CharField, ValidationError
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-# from .utils import send_activation_code
 from .tasks import send_activation_code_celery, send_password_celery
 
 
 User = get_user_model()
+
+class ActivationLogOutSerializer(ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = '__all__'
 
 
 class RegisterSerializer(ModelSerializer):

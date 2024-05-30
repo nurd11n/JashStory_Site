@@ -1,45 +1,59 @@
 version: "3"
 services:
-    impex-postgres:
-      image: postgres
-      container_name: history-postgres
-      restart: always
-      environment:
-        POSTGRES_DB: ${DB_NAME}
-        POSTGRES_USER: ${DB_USER}
-        POSTGRES_PASSWORD: ${DB_PASS}
-      ports:
-        - "5438:5432"
-      volumes:
-        - postgres_data:/var/lib/postgresql/data
+  redux-postgres:
+    image: postgres
+    container_name: history-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    ports:
+      - "5438:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
-    django:
-      build: .
-      container_name: history
-      ports:
-        - "8001:8001"
-      volumes:
-        - .:/app
-        - static_volume:/usr/src/app/back-static
-        - media_volume:/usr/src/app/back-media
-      restart: always
-      command: sh -c "python manage.py makemigrations && python manage.py collectstatic --noinput  && python manage.py migrate && gunicorn config.wsgi:application --bind 0.0.0.0:8001"
-      depends_on:
-        - history-postgres
+  django:
+    build: .
+    container_name: history
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - static_volume:/usr/src/app/back-static
+      - media_volume:/usr/src/app/back-media
+    restart: always
+    command: sh -c "python manage.py makemigrations && python manage.py collectstatic --noinput && python manage.py migrate && gunicorn config.wsgi:application"
+    depends_on:
+      - history-postgres
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_HOST: redux-postgres
 
-    nginx:
-      image: nginx
-      ports:
-        - 80:80
-        - 443:443
-      restart: always
-      volumes:
-        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-        - static_volume:/usr/src/app/back-static
-        - media_volume:/usr/src/app/back-media
-        - /etc/letsencrypt:/etc/letsencrypt
-      depends_on:
-        - django
+  celery:
+    build: .
+    container_name: celery
+    volumes:
+      - .:/app
+    command: celery -A your_app_name worker --loglevel=info
+    depends_on:
+      - history-postgres
+      - django
+
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/nginx_ssl/nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/usr/src/app/back-static
+      - media_volume:/usr/src/app/back-media
+      - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - django
 
 volumes:
   postgres_data:

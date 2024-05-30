@@ -33,7 +33,7 @@ DEBUG = config("DEBUG", default=False)
 
 ALLOWED_HOSTS = ["*"]
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'users.User'
 
 # Application definition
 
@@ -55,11 +55,20 @@ INSTALLED_APPS = [
     "django_filters",
     "corsheaders",
     "googletrans",
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+    'dj_rest_auth', 
+    'dj_rest_auth.registration', 
+    'rest_framework.authtoken',
 
-    # apps
     'apps.history',
-    'account',
+    'users',
 ]
+
+TOKEN_MODEL = None
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -67,6 +76,7 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    'allauth.account.middleware.AccountMiddleware',
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -99,23 +109,23 @@ SITE_ID = 1
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": config('DB_NAME'),
-#         'USER': config('DB_USER'),
-#         "PASSWORD": config('DB_PASS'),
-#         'HOST': config('DB_HOST'),
-#         'PORT': 5432,
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": config('DB_NAME'),
+        'USER': config('DB_USER'),
+        "PASSWORD": config('DB_PASS'),
+        'HOST': config('DB_HOST', 'history-postgres'),
+        'PORT': 5432,
+    }
+}
 
 
 # Password validation

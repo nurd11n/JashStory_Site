@@ -1,28 +1,26 @@
-from rest_framework.viewsets import ModelViewSet
-from rest_framework import filters
+from rest_framework import filters, generics
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import *
 from .serializers import *
-from rest_framework import generics
 
 
-class CategoryView(ModelViewSet):
+class CategoryView(generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['slug', 'name']
+    filterset_fields = ['name']
     search_fields = ['name']
 
 
-class YearsView(ModelViewSet):
-    queryset = Years.objects.all()
+class YearsView(generics.ListAPIView):
+    queryset = Year.objects.all()
     serializer_class = YearsSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['slug', 'ages']
-    search_fields = ['ages']
+    filterset_fields = ['name', 'start_age', 'end_age']
+    search_fields = ['name', 'start_age', 'end_age']
 
 
-class PostView(ModelViewSet):
+class PostView(generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
@@ -30,11 +28,11 @@ class PostView(ModelViewSet):
     search_fields = ['title', 'years', 'category']
 
 
-class CollectionView(ModelViewSet):
+class CollectionView(generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Collection.objects.all()
     serializer_class = CollectionSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['slug', 'title']
+    filterset_fields = ['title']
     search_fields = ['title']
 
 

@@ -11,4 +11,6 @@ urlpatterns = [
     path('change_password/', ChangePasswordView.as_view()),
     path('lose_password/', ForgotPasswordView.as_view()),
     path('lose_confirm/', ForgotPasswordCompleteView.as_view(), name='forgot'),
+    path('facebook-login/', FacebookLogin.as_view(), name='fb_login'),
+    path('google-login/', GoogleLogin.as_view(), name='google_login'),
 ]

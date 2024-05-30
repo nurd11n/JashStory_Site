@@ -4,14 +4,13 @@ from .serializers import RegisterSerializer
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from .serializers import (
     RegisterSerializer,
     ChangePasswordSerializer,
     ForgotPasswordSerializer,
     ForgotPasswordCompleteSerializer,
+    ActivationLogOutSerializer,
 )
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -20,12 +19,41 @@ from rest_framework import status, generics
 from drf_yasg.utils import swagger_auto_schema
 from .tasks import send_password_celery
 from .permissions import IsAuthorPermission
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from dj_rest_auth.registration.serializers import SocialLoginSerializer
+from dj_rest_auth.registration.views import SocialLoginView
+
+
+class FacebookLogin(SocialLoginView):
+    adapter_class = FacebookOAuth2Adapter
+    client_class = OAuth2Client
+    serializer_class = SocialLoginSerializer
+
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.get_serializer_class()
+        kwargs['context'] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)
+
+
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    client_class = OAuth2Client
+    serializer_class = SocialLoginSerializer
+
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.get_serializer_class()
+        kwargs['context'] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)
 
 
 User = get_user_model()
 
 
-class RegisterView(APIView):
+class RegisterView(generics.GenericAPIView):
+    serializer_class = RegisterSerializer
+
     @swagger_auto_schema(request_body=RegisterSerializer())
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
@@ -34,7 +62,10 @@ class RegisterView(APIView):
         return Response('Successfully registered', status=201)
 
 
-class ActivationView(APIView):
+class ActivationView(generics.GenericAPIView):
+    serializer_class = ActivationLogOutSerializer
+
+    @swagger_auto_schema(request_body=ActivationLogOutSerializer())
     def get(self, request, email, activation_code):
         user = User.objects.filter(email=email, activation_code=activation_code).first()
         if not user:
@@ -45,9 +76,11 @@ class ActivationView(APIView):
         return Response('Successfully activated', status=200)
     
 
-class LogoutView(APIView):
+class LogoutView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
+    serializer_class = ActivationLogOutSerializer
 
+    @swagger_auto_schema(request_body=ActivationLogOutSerializer())
     def post(self, request):
         try:
             refresh_token = request.data['refresh_token']
@@ -58,7 +91,8 @@ class LogoutView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ChangePasswordView(APIView):
+class ChangePasswordView(generics.GenericAPIView):
+    serializer_class = ChangePasswordSerializer
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(request_body=ChangePasswordSerializer)
@@ -93,7 +127,8 @@ class ForgotPasswordView(generics.CreateAPIView):
         return Response({'Код восстановления отправлен на ваш email.'}, status=status.HTTP_200_OK)
 
 
-class ForgotPasswordCompleteView(APIView):
+class ForgotPasswordCompleteView(generics.GenericAPIView):
+    serializer_class = ForgotPasswordCompleteSerializer
 
     @swagger_auto_schema(request_body=ForgotPasswordCompleteSerializer)
     def post(self, request):
@@ -103,7 +138,6 @@ class ForgotPasswordCompleteView(APIView):
         )
         serializer.is_valid(raise_exception=True)
         serializer.set_new_password()
-        # logger.error('Ошибка ChangePasswordV')
         return Response(
             'Пароль успешно обнавлен', status=200
         )
