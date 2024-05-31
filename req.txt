@@ -80,3 +80,4 @@ Faker==24.4.0
 django-allauth
 dj-rest-auth
 cryptography
+django-redis
