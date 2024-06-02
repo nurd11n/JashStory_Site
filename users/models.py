@@ -32,6 +32,7 @@ class User(AbstractUser):
     is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=10, blank=True)
     forgot_password_code = models.CharField(max_length=20, blank=True)
+    fcm_token = models.CharField('fcm token', max_length=255, null=True, blank=True)
 
     objects = UserManager()
 

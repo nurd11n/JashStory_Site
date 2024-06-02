@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from .models import *
 
 
@@ -6,7 +7,7 @@ class CategorySerializer(ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ['slug', 'name', 'image']
+        fields = ['name', 'image']
 
 
 class YearsSerializer(ModelSerializer):
@@ -14,17 +15,37 @@ class YearsSerializer(ModelSerializer):
         model = Year
         fields = '__all__'
 
+class PostListSerializer(ModelSerializer):
+    images = serializers.SerializerMethodField("get_image")
 
-class PostSerializer(ModelSerializer):
+    def get_image(self, obj):
+        return PostImageSerializer(obj.images.all(), many=True).data
+    
     class Meta:
         model = Post
-        fields = ['category', 'title', 'years', 'article', 'collection']
+        fields = ['category', 'title', 'years', 'collection', 'images']
+
+
+class PostSerializer(ModelSerializer):
+    images = serializers.SerializerMethodField("get_image")
+
+    def get_image(self, obj):
+        return PostImageSerializer(obj.images.all(), many=True).data
+    
+    class Meta:
+        model = Post
+        fields = ['category', 'title', 'years', 'article', 'collection', 'images']
 
 
 class CollectionSerializer(ModelSerializer):
+    images = serializers.SerializerMethodField("get_image")
+
+    def get_image(self, obj):
+        return CollectionImageSerializer(obj.images.all(), many=True).data
+    
     class Meta:
         model = Collection
-        fields = ['slug', 'title']
+        fields = ['title', 'images']
 
 
 class PostImageSerializer(ModelSerializer):

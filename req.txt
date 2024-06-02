@@ -81,3 +81,5 @@ django-allauth
 dj-rest-auth
 cryptography
 django-redis
+django-ckeditor
+django-allauth

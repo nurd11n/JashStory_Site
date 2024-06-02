@@ -27,6 +27,7 @@ urlpatterns = [
     path("redoc/", SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('i18n/', include('django.conf.urls.i18n')),
     path('account/', include('users.urls')),
+    path('accounts/', include('allauth.urls')),
     path("admin/", admin.site.urls),
     path('pages/', include('django.contrib.flatpages.urls')),
     path('api/', include('apps.history.urls')),

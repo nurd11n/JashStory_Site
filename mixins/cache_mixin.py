@@ -6,7 +6,7 @@ import re
 from django.core.cache import cache
 from django.conf import settings
 
-from apps.impex_corp.models import *
+from apps.history.models import *
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
@@ -34,28 +34,28 @@ def delete_cache(key_prefix: str):
     delete_cache_pattern(keys_pattern)
 
 
-@receiver(post_save, sender=Service)
+@receiver(post_save, sender=Year)
 def delete_caches_service(sender, instance, created, **kwargs):
     print(f"Delete cash in {instance.CACHE_KEY_PREFIX}")
     if created:
         delete_cache(instance.CACHE_KEY_PREFIX)
 
 
-@receiver(post_save, sender=Product)
+@receiver(post_save, sender=CollectionImage)
 def delete_caches(sender, instance, created, **kwargs):
     print(f"Delete cash in {instance.CACHE_KEY_PREFIX}")
     if created:
         delete_cache(instance.CACHE_KEY_PREFIX)
 
 
-@receiver(post_save, sender=AutoImage)
+@receiver(post_save, sender=PostImage)
 def delete_caches(sender, instance, created, **kwargs):
     print(f"Delete cash in {instance.CACHE_KEY_PREFIX}")
     if created:
         delete_cache(instance.CACHE_KEY_PREFIX)
 
 
-@receiver(post_save, sender=Auto)
+@receiver(post_save, sender=Post)
 def delete_caches(sender, instance, created, **kwargs):
     print(f"Delete cash in {instance.CACHE_KEY_PREFIX}")
     if created:
@@ -69,7 +69,7 @@ def delete_caches(sender, instance, created, **kwargs):
         delete_cache(instance.CACHE_KEY_PREFIX)
 
 
-@receiver(post_save, sender=Catalogue)
+@receiver(post_save, sender=Collection)
 def delete_caches(sender, instance, created, **kwargs):
     print(f"Delete cash in {instance.CACHE_KEY_PREFIX}")
     if created:

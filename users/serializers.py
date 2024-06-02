@@ -18,7 +18,7 @@ class RegisterSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = 'email', 'password', 'password_confirm'
+        fields = 'username', 'email', 'password', 'password_confirm'
 
     def validate(self, attrs):
         pass1 = attrs.get('password')
@@ -114,3 +114,10 @@ class ForgotPasswordCompleteSerializer(serializers.Serializer):
         user.save()
 
 
+class SetTokenSerializer(serializers.Serializer):
+    fcm_token = serializers.CharField()
+
+    def save(self, **kwargs):
+        user = User.objects.get(id=self.context.get('request').user.id)
+        user.fcm_token = self.initial_data['fcm_token']
+        user.save()

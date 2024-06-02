@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
+from rest_framework.generics import CreateAPIView
 from .serializers import RegisterSerializer
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
@@ -11,7 +12,9 @@ from .serializers import (
     ForgotPasswordSerializer,
     ForgotPasswordCompleteSerializer,
     ActivationLogOutSerializer,
+    SetTokenSerializer,
 )
+from drf_spectacular.utils import extend_schema
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
@@ -60,6 +63,11 @@ class RegisterView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response('Successfully registered', status=201)
+    
+@extend_schema(tags=['Registration'])
+class SetTokenAPIView(CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = SetTokenSerializer
 
 
 class ActivationView(generics.GenericAPIView):

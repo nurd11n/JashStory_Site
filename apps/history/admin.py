@@ -3,6 +3,7 @@ from django import forms
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from .models import *
 from mixins.translations_mixins import TranslatorMediaMixin
+from .filters import PostFilter
 
 TEXT = "Здесь вам нужно будет ввести данные товара на 3 разных языках"
 
@@ -19,9 +20,10 @@ class PostAdminForm(forms.ModelForm):
 
 @admin.register(Category)
 class CategoryAdminModel(TranslatorMediaMixin):
-    list_display = ['slug', "name", ]
-    list_display_links = ("slug", )
-    prepopulated_fields = {'slug': ("name", )}
+    list_display = ['id', "name", ]
+    list_display_links = ("id",)
+    list_filter = ['id', "name"]
+    search_fields = ['id', "name"]
 
 
 class PostImageInline(admin.TabularInline):
@@ -33,7 +35,11 @@ class PostImageInline(admin.TabularInline):
 @admin.register(Post)
 class PostAdminModel(TranslatorMediaMixin):
     inlines = [PostImageInline, ]
-    list_display = ["title", ]
+    list_display = ['id', "title", ]
+    list_display_links = ("id",)
+    list_filter = ['id', "title"]
+    filter_class = PostFilter
+    search_fields = ['id', "title"]
 
 
 class CollectionImageInline(admin.TabularInline):
@@ -45,7 +51,10 @@ class CollectionImageInline(admin.TabularInline):
 @admin.register(Collection)
 class CollectionAdminModel(TranslatorMediaMixin):
     inlines = [CollectionImageInline, ]
-    list_display = ["title", ]
+    list_display = ['id', "title", ]
+    list_display_links = ("id",)
+    list_filter = ['id', "title"]
+    search_fields = ['id', "title"]
 
 
 admin.site.register(Year)
