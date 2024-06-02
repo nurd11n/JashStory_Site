@@ -7,7 +7,7 @@ class CategorySerializer(ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ['name', 'image']
+        fields = ['id', 'name', 'image']
 
 
 class YearsSerializer(ModelSerializer):
@@ -23,7 +23,7 @@ class PostListSerializer(ModelSerializer):
     
     class Meta:
         model = Post
-        fields = ['category', 'title', 'years', 'collection', 'images']
+        fields = ['id', 'category', 'title', 'years', 'collection', 'images']
 
 
 class PostSerializer(ModelSerializer):
@@ -34,7 +34,7 @@ class PostSerializer(ModelSerializer):
     
     class Meta:
         model = Post
-        fields = ['category', 'title', 'years', 'article', 'collection', 'images']
+        fields = ['id', 'category', 'title', 'years', 'article', 'collection', 'images']
 
 
 class CollectionSerializer(ModelSerializer):
@@ -45,7 +45,7 @@ class CollectionSerializer(ModelSerializer):
     
     class Meta:
         model = Collection
-        fields = ['title', 'images']
+        fields = ['id', 'title', 'images']
 
 
 class PostImageSerializer(ModelSerializer):

@@ -10,7 +10,7 @@ from .rest_framework import *
 from .celery_settings import *
 from .spectacular import *
 from .cashes import *
-# from users.adapters import SocialAccountAdapter
+from .ckeditor import *
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
