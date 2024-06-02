@@ -11,6 +11,7 @@ INSTALLED_APPS = [
     "django.contrib.flatpages",
 
     "debug_toolbar",
+    'django_seed',
     'drf_spectacular',
     "rest_framework",
     "django_filters",

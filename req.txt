@@ -83,3 +83,4 @@ cryptography
 django-redis
 django-ckeditor
 django-allauth
+django-seed
