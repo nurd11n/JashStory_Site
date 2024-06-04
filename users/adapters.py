@@ -26,5 +26,3 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
         user.save()
         return user
     
-    def get_login_redirect_url(self, request):
-        return '/accounts/'
