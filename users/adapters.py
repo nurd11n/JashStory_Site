@@ -19,3 +19,12 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
 
         user.username = username
         return user
+
+    def save_user(self, request, sociallogin, form=None):
+        user = super(SocialAccountAdapter, self).save_user(request, sociallogin, form)
+        user.is_active = True  
+        user.save()
+        return user
+    
+    def get_login_redirect_url(self, request):
+        return '/accounts/'
