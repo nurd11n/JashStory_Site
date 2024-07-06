@@ -1,4 +1,5 @@
 from rest_framework import filters, generics, views, status
+from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import *
 from .serializers import *
@@ -7,6 +8,7 @@ from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from django.db.models import Prefetch
 from mixins.cache_mixin import CacheMixin
+from .models import Post
 
 
 @extend_schema(tags=['Category'])
@@ -76,3 +78,13 @@ class CollectionImageViewSet(CacheMixin, generics.ListAPIView):
     CACHE_KEY_PREFIX = "collection_image"
     queryset = CollectionImage.objects.all()
     serializer_class = CollectionImageSerializer
+
+
+class PostSearchView(APIView):
+    def get(self, request):
+        query = request.GET.get('q')
+        if query:
+            posts = Post.objects.filter(title__icontains=query)
+            serializer = PostSerializer(posts, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"detail": "No query provided"}, status=status.HTTP_400_BAD_REQUEST)

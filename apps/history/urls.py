@@ -11,4 +11,5 @@ urlpatterns = [
     path('year/<str:pk>/', YearsView.as_view()),
     path('collection/', CollectionView.as_view()),
     path('collection/<str:pk>/', CollectionView.as_view()),
+    path('search/', PostSearchView.as_view(), name='tour-search'),
 ]
