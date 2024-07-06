@@ -66,23 +66,24 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 SITE_ID = 1
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if config("DEBUG") == "False":
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASS'),
+            'HOST': config('DB_HOST', 'history-postgres'),
+            'PORT': 5432,
+        }
     }
-}
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": config('DB_NAME'),
-#         'USER': config('DB_USER'),
-#         "PASSWORD": config('DB_PASS'),
-#         'HOST': config('DB_HOST', 'history-postgres'),
-#         'PORT': 5432,
-#     }
-# }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 AUTH_PASSWORD_VALIDATORS = [
