@@ -1,4 +1,4 @@
-from rest_framework import filters, generics, views, status
+from rest_framework import filters, generics, views, status, viewsets, mixins
 from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import *
@@ -9,6 +9,8 @@ from drf_spectacular.utils import extend_schema
 from django.db.models import Prefetch
 from mixins.cache_mixin import CacheMixin
 from .models import Post
+from django.db.models import Q
+from django.shortcuts import get_object_or_404
 
 
 @extend_schema(tags=['Category'])
@@ -80,6 +82,7 @@ class CollectionImageViewSet(CacheMixin, generics.ListAPIView):
     serializer_class = CollectionImageSerializer
 
 
+@extend_schema(tags=['Post Search'])
 class PostSearchView(APIView):
     def get(self, request):
         query = request.GET.get('q')
@@ -88,3 +91,23 @@ class PostSearchView(APIView):
             serializer = PostSerializer(posts, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"detail": "No query provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@extend_schema(tags=['Post Recommendation'])
+class PostRecommendationsApiView(viewsets.GenericViewSet, mixins.ListModelMixin):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        post_id = self.kwargs.get('pk')
+        current_post = get_object_or_404(Post, id=post_id)
+        title_words = current_post.title.split()
+        query = Q()
+        for word in title_words:
+            query |= Q(title__icontains=word)
+        queryset = Post.objects.filter(query).exclude(id=post_id)
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

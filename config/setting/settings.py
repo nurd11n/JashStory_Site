@@ -25,7 +25,7 @@ AUTH_USER_MODEL = 'users.User'
 TOKEN_MODEL = None
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -149,6 +149,11 @@ DEBUG_TOOLBAR_CONFIG = {
 
 SOCIALACCOUNT_ADAPTER = 'users.adapters.SocialAccountAdapter'
 
-STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
-STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
-STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET')
+# STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
+# STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+# STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET')
+
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_SSL_REDIRECT = True
+
+# CSRF_TRUSTED_ORIGINS = ['https://jashstory.pp.ua', 'http://35.198.189.89']
