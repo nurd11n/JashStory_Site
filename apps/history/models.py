@@ -1,5 +1,4 @@
 from django.db import models
-from ckeditor.fields import RichTextField
 
 import uuid
 import random
@@ -52,6 +51,7 @@ class Year(models.Model):
 class Collection(TranslationMixin, models.Model):
     id = models.CharField(primary_key=True, default=generate_unique_numeric_id, max_length=10, editable=False, unique=True)
     title = models.CharField(max_length=100, verbose_name="Наименование")
+    image = WEBPField(upload_to=image_folder)
 
     fields_to_translate = ['title']
     CACHE_KEY_PREFIX = "collection"
@@ -64,19 +64,13 @@ class Collection(TranslationMixin, models.Model):
         verbose_name_plural = 'Коллекция'
 
 
-class CollectionImage(models.Model):
-    collection = models.ForeignKey(Collection, related_name='images', on_delete=models.CASCADE)
-    image = WEBPField(upload_to=image_folder)
-
-    CACHE_KEY_PREFIX = "collection_image"
-
-
 class Post(TranslationMixin, models.Model):
     id = models.CharField(primary_key=True, default=generate_unique_numeric_id, max_length=10, editable=False, unique=True)
     category = models.ForeignKey(Category, models.CASCADE, related_name='posts')
     title = models.CharField(max_length=100)
+    image = WEBPField(upload_to=image_folder)
     years = models.ForeignKey(Year, models.CASCADE, related_name='posts')
-    article = RichTextField(null=True, blank=True)
+    article = models.TextField(null=True, blank=True)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE, related_name='posts')
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -89,11 +83,4 @@ class Post(TranslationMixin, models.Model):
     class Meta:
         verbose_name = 'Пост'
         verbose_name_plural = 'Пост'
-    
-
-class PostImage(models.Model):
-    post = models.ForeignKey(Post, related_name='images', on_delete=models.CASCADE)
-    image = WEBPField(upload_to=image_folder)
-
-    CACHE_KEY_PREFIX = "post_image"
 

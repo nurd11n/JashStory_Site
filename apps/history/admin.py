@@ -26,15 +26,8 @@ class CategoryAdminModel(TranslatorMediaMixin):
     search_fields = ['id', "name"]
 
 
-class PostImageInline(admin.TabularInline):
-    model = PostImage
-    max_num = 20
-    extra = 0
-
-
 @admin.register(Post)
 class PostAdminModel(TranslatorMediaMixin):
-    inlines = [PostImageInline, ]
     list_display = ['id', "title", ]
     list_display_links = ("id",)
     list_filter = ['id', "title"]
@@ -42,15 +35,8 @@ class PostAdminModel(TranslatorMediaMixin):
     search_fields = ['id', "title"]
 
 
-class CollectionImageInline(admin.TabularInline):
-    model = CollectionImage
-    max_num = 20
-    extra = 0
-
-
 @admin.register(Collection)
 class CollectionAdminModel(TranslatorMediaMixin):
-    inlines = [CollectionImageInline, ]
     list_display = ['id', "title", ]
     list_display_links = ("id",)
     list_filter = ['id', "title"]

@@ -41,20 +41,6 @@ def delete_caches_service(sender, instance, created, **kwargs):
         delete_cache(instance.CACHE_KEY_PREFIX)
 
 
-@receiver(post_save, sender=CollectionImage)
-def delete_caches(sender, instance, created, **kwargs):
-    print(f"Delete cash in {instance.CACHE_KEY_PREFIX}")
-    if created:
-        delete_cache(instance.CACHE_KEY_PREFIX)
-
-
-@receiver(post_save, sender=PostImage)
-def delete_caches(sender, instance, created, **kwargs):
-    print(f"Delete cash in {instance.CACHE_KEY_PREFIX}")
-    if created:
-        delete_cache(instance.CACHE_KEY_PREFIX)
-
-
 @receiver(post_save, sender=Post)
 def delete_caches(sender, instance, created, **kwargs):
     print(f"Delete cash in {instance.CACHE_KEY_PREFIX}")

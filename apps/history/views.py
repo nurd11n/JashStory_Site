@@ -37,7 +37,6 @@ class YearsView(CacheMixin, generics.ListAPIView):
 class PostView(CacheMixin, generics.ListAPIView, generics.RetrieveAPIView):
     CACHE_KEY_PREFIX = "post"
     queryset = Post.objects.all().select_related("years", 'collection', 'category').prefetch_related(
-        Prefetch("images"),
         Prefetch("years"),
         Prefetch("category"),
         Prefetch("collection"),
@@ -66,20 +65,6 @@ class CollectionView(CacheMixin, generics.ListAPIView, generics.RetrieveAPIView)
     filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['title']
     search_fields = ['title']
-
-
-@extend_schema(tags=['Post - Image'])
-class PostImageViewSet(CacheMixin, generics.ListAPIView):
-    CACHE_KEY_PREFIX = "post_image"
-    queryset = PostImage.objects.all()
-    serializer_class = PostImageSerializer
-
-
-@extend_schema(tags=['Collections - Image'])
-class CollectionImageViewSet(CacheMixin, generics.ListAPIView):
-    CACHE_KEY_PREFIX = "collection_image"
-    queryset = CollectionImage.objects.all()
-    serializer_class = CollectionImageSerializer
 
 
 @extend_schema(tags=['Post Search'])
