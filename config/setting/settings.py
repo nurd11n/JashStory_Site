@@ -149,6 +149,9 @@ DEBUG_TOOLBAR_CONFIG = {
 
 SOCIALACCOUNT_ADAPTER = 'users.adapters.SocialAccountAdapter'
 
+BASE_URL = "http://localhost:8000"
+# BASE_URL = "'https://jashstory.pp.ua"
+
 # STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
 # STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 # STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET')
