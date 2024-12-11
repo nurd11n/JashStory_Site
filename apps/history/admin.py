@@ -43,5 +43,21 @@ class CollectionAdminModel(TranslatorMediaMixin):
     search_fields = ['id', "title"]
 
 
+@admin.register(Question)
+class QuestionAdminModel(TranslatorMediaMixin):
+    list_display = ['id', "text", ]
+    list_display_links = ("id",)
+    list_filter = ['id', "text"]
+    search_fields = ['id', "text"]
+
+
+@admin.register(Answer)
+class AnswerAdminModel(TranslatorMediaMixin):
+    list_display = ['id', "question", "is_correct", "text"]
+    list_display_links = ("id",)
+    list_filter = ['id', "text"]
+    search_fields = ['id', "text"]
+
+
 admin.site.register(Year)
 

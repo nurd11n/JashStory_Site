@@ -4,8 +4,6 @@ import uuid
 import random
 import string
 
-
-from mixins.model_translation import TranslationMixin
 from utils.fields import WEBPField, image_folder
 
 
@@ -16,13 +14,12 @@ def generate_unique_numeric_id():
             return unique_id
 
 
-class Category(TranslationMixin, models.Model):
+class Category(models.Model):
     id = models.CharField(primary_key=True, default=generate_unique_numeric_id, max_length=10, editable=False, unique=True)
     name = models.CharField(max_length=100, verbose_name="Наименование")
     image = WEBPField(upload_to=image_folder)
 
     fields_to_translate = ['name']
-    CACHE_KEY_PREFIX = "category"
 
     def __str__(self):
         return self.name
@@ -38,8 +35,6 @@ class Year(models.Model):
     start_age = models.IntegerField(blank=True, null=True)
     end_age = models.IntegerField(blank=True, null=True)
 
-    CACHE_KEY_PREFIX = "year"
-
     def __str__(self):
         return self.name
     
@@ -48,13 +43,12 @@ class Year(models.Model):
         verbose_name_plural = 'Года'
 
 
-class Collection(TranslationMixin, models.Model):
+class Collection(models.Model):
     id = models.CharField(primary_key=True, default=generate_unique_numeric_id, max_length=10, editable=False, unique=True)
     title = models.CharField(max_length=100, verbose_name="Наименование")
     image = WEBPField(upload_to=image_folder)
 
     fields_to_translate = ['title']
-    CACHE_KEY_PREFIX = "collection"
 
     def __str__(self):
         return self.title
@@ -64,7 +58,7 @@ class Collection(TranslationMixin, models.Model):
         verbose_name_plural = 'Коллекция'
 
 
-class Post(TranslationMixin, models.Model):
+class Post(models.Model):
     id = models.CharField(primary_key=True, default=generate_unique_numeric_id, max_length=10, editable=False, unique=True)
     category = models.ForeignKey(Category, models.CASCADE, related_name='posts')
     title = models.CharField(max_length=100)
@@ -75,7 +69,6 @@ class Post(TranslationMixin, models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     fields_to_translate = ['title', 'article']
-    CACHE_KEY_PREFIX = "post"
 
     def __str__(self):
         return f'{self.title} - {self.years} - {self.category}'
@@ -84,3 +77,12 @@ class Post(TranslationMixin, models.Model):
         verbose_name = 'Пост'
         verbose_name_plural = 'Пост'
 
+
+class Question(models.Model):
+    text = models.TextField()
+    
+
+class Answer(models.Model):
+    question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
+    text = models.CharField(max_length=255)
+    is_correct = models.BooleanField(default=False)
