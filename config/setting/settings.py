@@ -25,7 +25,6 @@ AUTH_USER_MODEL = 'users.User'
 TOKEN_MODEL = None
 
 MIDDLEWARE = [
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",

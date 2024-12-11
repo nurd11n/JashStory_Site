@@ -7,15 +7,13 @@ from .filters import PostFilter
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from django.db.models import Prefetch
-from mixins.cache_mixin import CacheMixin
 from .models import Post
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 
 @extend_schema(tags=['Category'])
-class CategoryView(CacheMixin, generics.ListAPIView, generics.RetrieveAPIView):
-    CACHE_KEY_PREFIX = "catalogue"
+class CategoryView(generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Category.objects.prefetch_related('posts')
     serializer_class = CategorySerializer
     filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
@@ -24,8 +22,7 @@ class CategoryView(CacheMixin, generics.ListAPIView, generics.RetrieveAPIView):
 
 
 @extend_schema(tags=['Years'])
-class YearsView(CacheMixin, generics.ListAPIView):
-    CACHE_KEY_PREFIX = "year"
+class YearsView(generics.ListAPIView):
     queryset = Year.objects.prefetch_related('posts')
     serializer_class = YearsSerializer
     filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
@@ -34,10 +31,8 @@ class YearsView(CacheMixin, generics.ListAPIView):
 
 
 @extend_schema(tags=['Posts'])
-class PostView(CacheMixin, generics.ListAPIView, generics.RetrieveAPIView):
-    CACHE_KEY_PREFIX = "post"
+class PostView(generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Post.objects.all().select_related("years", 'collection', 'category').prefetch_related(
-        Prefetch("images"),
         Prefetch("years"),
         Prefetch("category"),
         Prefetch("collection"),
@@ -59,27 +54,12 @@ class PostView(CacheMixin, generics.ListAPIView, generics.RetrieveAPIView):
 
 
 @extend_schema(tags=['Collections'])
-class CollectionView(CacheMixin, generics.ListAPIView, generics.RetrieveAPIView):
-    CACHE_KEY_PREFIX = "collection"
+class CollectionView(generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Collection.objects.prefetch_related('posts')
     serializer_class = CollectionSerializer
     filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['title']
     search_fields = ['title']
-
-
-@extend_schema(tags=['Post - Image'])
-class PostImageViewSet(CacheMixin, generics.ListAPIView):
-    CACHE_KEY_PREFIX = "post_image"
-    queryset = PostImage.objects.all()
-    serializer_class = PostImageSerializer
-
-
-@extend_schema(tags=['Collections - Image'])
-class CollectionImageViewSet(CacheMixin, generics.ListAPIView):
-    CACHE_KEY_PREFIX = "collection_image"
-    queryset = CollectionImage.objects.all()
-    serializer_class = CollectionImageSerializer
 
 
 @extend_schema(tags=['Post Search'])
@@ -111,3 +91,39 @@ class PostRecommendationsApiView(viewsets.GenericViewSet, mixins.ListModelMixin)
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class QuestionListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Question.objects.prefetch_related('answers').all()
+    serializer_class = QuestionSerializer
+
+
+class QuestionRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Question.objects.prefetch_related('answers').all()
+    serializer_class = QuestionSerializer
+
+
+class SubmitTestAPIView(generics.GenericAPIView):
+    def post(self, request, *args, **kwargs):
+        answers = request.data.get('answers', [])
+        correct_count = 0
+        total_questions = 0
+
+        for answer in answers:
+            question_id = answer.get('question_id')
+            answer_id = answer.get('answer_id')
+
+            try:
+                question = Question.objects.get(id=question_id)
+                selected_answer = question.answers.get(id=answer_id)
+                total_questions += 1
+                if selected_answer.is_correct:
+                    correct_count += 1
+            except (Question.DoesNotExist, Answer.DoesNotExist):
+                return Response({"error": "Invalid question or answer ID"}, status=400)
+
+        return Response({
+            "total_questions": total_questions,
+            "correct_answers": correct_count,
+            "score": f"{correct_count}/{total_questions}"
+        })

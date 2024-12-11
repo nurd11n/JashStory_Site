@@ -3,21 +3,6 @@ from rest_framework import serializers
 from .models import *
 
 
-class PostImageSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
-
-    def get_image(self, obj):
-        request = self.context.get('request')
-        if request is not None:
-            return request.build_absolute_uri(obj.image.url)
-        else:
-            return f'{settings.BASE_URL}{obj.image.url}'
-
-    class Meta:
-        model = PostImage 
-        fields = ['image']
-
-
 class CategorySerializer(ModelSerializer):
 
     class Meta:
@@ -30,41 +15,43 @@ class YearsSerializer(ModelSerializer):
         model = Year
         fields = '__all__'
 
-class PostListSerializer(serializers.ModelSerializer):
-    images = serializers.SerializerMethodField("get_image")
-
-    def get_image(self, obj):
-        return PostImageSerializer(obj.images.all(), many=True, context=self.context).data
-
-    class Meta:
-        model = Post
-        fields = ['id', 'category', 'title', 'years', 'collection', 'images']
-
-
-class PostSerializer(serializers.ModelSerializer):
-    images = serializers.SerializerMethodField("get_image")
-
-    def get_image(self, obj):
-        return PostImageSerializer(obj.images.all(), many=True, context=self.context).data
-
-    class Meta:
-        model = Post
-        fields = ['id', 'category', 'title', 'years', 'article', 'collection', 'images']
-
 
 class CollectionSerializer(ModelSerializer):
-    images = serializers.SerializerMethodField("get_image")
-
-    def get_image(self, obj):
-        return CollectionImageSerializer(obj.images.all(), many=True).data
     
     class Meta:
         model = Collection
-        fields = ['id', 'title', 'images']
+        fields = ['id', 'title', 'image']
 
 
-class CollectionImageSerializer(ModelSerializer):
+class PostListSerializer(serializers.ModelSerializer):
+    category = CategorySerializer() 
+    years = YearsSerializer()        
+    collection = CollectionSerializer()
 
     class Meta:
-        model = CollectionImage
-        fields = ["image"]
+        model = Post
+        fields = ['id', 'category', 'title', 'years', 'collection', 'image']
+
+
+class PostSerializer(serializers.ModelSerializer):
+    category = CategorySerializer()  
+    years = YearsSerializer()        
+    collection = CollectionSerializer()
+
+    class Meta:
+        model = Post
+        fields = ['id', 'category', 'title', 'years', 'article', 'collection', 'image']
+
+
+class AnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = ['id', 'text', 'is_correct']
+        
+
+class QuestionSerializer(serializers.ModelSerializer):
+    answers = AnswerSerializer(many=True)
+
+    class Meta:
+        model = Question
+        fields = ['id', 'text', 'answers']

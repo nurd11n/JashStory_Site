@@ -15,3 +15,13 @@ class CatalogueTranslateOptions(TranslationOptions):
 @register(Collection)
 class ProductTranslateOptions(TranslationOptions):
     fields = ('title',)
+
+
+@register(Question)
+class QuestionTranslateOptions(TranslationOptions):
+    fields = ('text',)
+
+
+@register(Answer)
+class AnswerTranslateOptions(TranslationOptions):
+    fields = ('text',)
